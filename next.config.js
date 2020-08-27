@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 class MyPlugin {
     constructor (isServer) {
         this.counter = 0
@@ -5,9 +8,13 @@ class MyPlugin {
     }
 
     apply (compiler) {
-        compiler.hooks.watchRun.tapAsync('MyPlugin', async () => {
+        compiler.hooks.watchRun.tap('MyPlugin', () => {
             this.counter += 1
             console.log(`${this.isServer ? 'Server' : 'Client'} MyPlugin counter = `, this.counter)
+            
+            const filePath = path.resolve('./theme/test.js')
+            const dataString = `export default ${JSON.stringify({ data: 'Hello World' })}`
+            fs.writeFileSync(filePath, dataString)
         })
     }
 }
